@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mods xmlns="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-6.xsd"
+    version="3.6">
+    
+    <!-- Mapping for " Iowa City Town and Campus Scenes", ID: ictcs-->
+    
+    <titleInfo>
+        <title><?cdm-element-name title?></title>
+    </titleInfo>
+    
+    <identifier type="local"><?cdm-element-name identifier?></identifier>
+    <identifier type="imagenumber"><?cdm-element-name imagenumber?></identifier>
+    <!-- TBD: Risk to entering this if filename not match contentdm filename or asset being substituted -->
+    <identifier type="filename"><?cdm-element-name filename?></identifier>
+    <!-- TBD: as relatedItem? -->
+    <identifier type="oclccollection"><?cdm-element-name oclc-collection?></identifier>
+        
+    <name type="personal">
+        <namePart><?cdm-element-name creator?></namePart>
+        <role>
+            <roleTerm type="text" authority="marcrelator">creator</roleTerm>
+        </role>
+    </name>
+    
+    <!-- contributor may require post processing to create individual /mods/name for each -->
+    <!-- note misspelling of element name in export -->
+    <name type="personal">
+        <namePart><?cdm-element-name contributer?></namePart>
+        <role>
+            <roleTerm type="text" authority="marcrelator">contributor</roleTerm>
+        </role>
+    </name>
+    
+    <!-- spreadsheet doesn't align with agreed upon spec for this, spec followed -->
+    <name type="corporate">
+        <namePart><?cdm-element-name contributinginstitution?></namePart>
+        <role>
+            <roleTerm type="text" authority="marcrelator">contributor</roleTerm>
+        </role>
+    </name>
+    
+    
+    <originInfo>
+        <dateCreated><?cdm-element-name date?></dateCreated>
+        <dateCaptured><?cdm-element-name date-scanned?></dateCaptured>
+        <publisher><?cdm-element-name publisher?></publisher>
+    </originInfo>
+    
+    <!-- TBD: only one subject in export, several listed in spreadsheet, could require different custom mapping
+         or post processing
+    -->
+    <subject>
+        <topic><?cdm-element-name subject?></topic>
+    </subject>
+    
+    <!-- TBD: post processing to contatenate lat/long -->
+    <subject>
+        <cartographics>
+            <coordinates><?cdm-element-name latitude?></coordinates>
+            <coordinates><?cdm-element-name longitude?></coordinates>
+        </cartographics>
+    </subject>
+    
+    <!-- TBD: only one type in export, several listed in spreadsheet-->
+    <genre><?cdm-element-name type?></genre>
+    
+    <!-- TBD: Can both be mapped to same element? Or post processing req'd? -->
+    <location>
+        <holdingSimple>
+            <copyInformation>
+                <shelfLocator><?cdm-element-name folder?></shelfLocator>
+                <shelfLocator><?cdm-element-name foldernumber?></shelfLocator>
+            </copyInformation>
+        </holdingSimple>
+    </location>
+    
+    <abstract><?cdm-element-name description?></abstract>
+    
+    
+    <physicalDescription>
+        <!-- TBD: post-processing needed to concatenate height and width. Also: Units?? -->
+        <extent><?cdm-element-name height?></extent>
+        <extent><?cdm-element-name width?></extent>
+        <extent><?cdm-element-name duration?></extent>
+        <form type="materials"></form>
+    </physicalDescription>
+    
+    <accessCondition type="use and reproduction"><?cdm-element-name rights?></accessCondition>
+    
+    <note type="local"><?cdm-element-name note?></note>
+    
+    <note type="digitization specifications"><?cdm-element-name digitizationspecifications?></note>
+    
+    <note type="contact information"><?cdm-element-name contact?></note>
+    
+    <recordInfo displayLabel="cataloging">
+        <recordContentSource><?cdm-element-name cataloger?></recordContentSource>
+        <recordCreationDate><?cdm-element-name date-created?></recordCreationDate>
+        <!-- TBD: this is of suspect or only legacy value -->
+        <recordChangeDate><?cdm-element-name date-modified?></recordChangeDate>
+    </recordInfo>
+    
+    <relatedItem type="host">
+        <identifier type="collectionName"><?cdm-element-name collectionName?></identifier>
+    </relatedItem>
+    
+    <relatedItem type="host" displayLabel="Archival Collection">
+        <titleInfo>
+            <title><?cdm-element-name source?></title>
+        </titleInfo>
+        <identifier><?cdm-element-name collectionidentifier?></identifier>
+    </relatedItem>
+    
+    <relatedItem type="isReferencedBy" displayLabel="Collection Guide">
+        <location>
+            <url><?cdm-element-name collectionguide?></url>
+        </location>
+    </relatedItem>
+    
+    <relatedItem type="otherVersion">
+        <identifier><?cdm-element-name flickrID?></identifier>
+        <location>
+            <url><?cdm-element-name flickr?></url>
+        </location>
+    </relatedItem>
+    
+    <!-- /mods/relatedItem[@type = 'series']/titleInfo/title -->
+    <relatedItem type="series">
+        <titleInfo>
+            <title><?cdm-element-name series?></title>
+        </titleInfo>
+        <identifier type="series"><?cdm-element-name seriesnumber?></identifier>
+        <identifier type="subseries"><?cdm-element-name subseries?></identifier>
+    </relatedItem>
+    
+    
+    <!-- DO NOT REMOVE ANY OF THE FOLLOWING CONTENT -->
+    
+    <!-- This will map the file extension to a content model -->
+    <relatedItem otherType="islandoraCModel" otherTypeAuth="dgi">
+        <identifier><?cdm-element-name contentdm-fileName?></identifier>
+    </relatedItem>
+    
+    <!-- assign collection -->
+    <relatedItem otherType="islandoraCollection" otherTypeAuth="dgi"/>
+    
+    <!-- assign parent/child relationships -->
+    <relatedItem otherType="isChildOf" otherTypeAuth="dgi"/>
+    
+    <!-- This will embed a link the ingest process can follow to retrieve the digital object to place
+         in the OBJ datastream. This PI must be mapped to the element that has the ContentDM item url. -->
+    <relatedItem otherType="OBJ" otherTypeAuth="dgi">
+        <?cdm-element-name item-url?>
+    </relatedItem>
+    
+    
+    <!-- This will temporarily embed the original ContentDM data. It is retrieved by the ingest process and stored
+         in a CDM datastream. -->
+    <relatedItem otherType="CDMDatastream" otherTypeAuth="dgi">
+        <extension><?cdm-element-name record?></extension>
+    </relatedItem>
+    
+    <!-- This will temporarily embed the full text data. It is retrieved by the ingest process and stored
+         in a FULLTEXT datastream. -->
+    <relatedItem otherType="FULLTEXTDatastream" otherTypeAuth="dgi">
+        <extension>
+            <FULLTEXT><?cdm-element-name full-text?></FULLTEXT>
+        </extension>
+    </relatedItem>
+    
+    
+    
+</mods>
