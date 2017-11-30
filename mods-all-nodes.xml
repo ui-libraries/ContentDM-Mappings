@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mods xmlns="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-6.xsd"
+    version="3.6">
+    
+    <titleInfo>
+        <title>Title</title>
+    </titleInfo>
+    
+    <titleInfo type="uniform">
+        <title>Uniform Title</title>
+    </titleInfo>
+    
+    <name type="personal">
+   		<namePart>Creator Name</namePart>
+   		<role>
+   			<roleTerm type="text" authority="marcrelator">creator</roleTerm>
+    	</role>
+    </name>
+    
+    <name type="personal">
+   		<namePart>Contributor Name</namePart>
+   		<role>
+   			<roleTerm type="text" authority="marcrelator">contributor</roleTerm>
+    	</role>
+    </name>
+    
+    <name type="personal">
+   		<namePart>Interviewer Name</namePart>
+   		<role>
+   			<roleTerm type="text" authority="marcrelator">interviewer</roleTerm>
+    	</role>
+    </name>   
+    
+    <name type="personal">
+   		<namePart>Photographer Name</namePart>
+   		<role>
+   			<roleTerm type="text" authority="marcrelator">photographer</roleTerm>
+    	</role>
+    </name> 
+    
+    <name type="conference">
+    	<namePart>Conference</namePart>
+    </name>
+    
+    <name type="corporate">
+        <namePart>Contributing Institution</namePart>
+        <role>
+            <roleTerm authority="marcrelator" type="text">contributor</roleTerm>
+        </role>
+    </name>
+    
+    
+    
+    <originInfo>
+    	<dateCreated>Date Original</dateCreated>
+        <dateCaptured>Date Digital</dateCaptured>
+        <publisher>publisher</publisher>
+    </originInfo>
+    
+    
+    <abstract>Description</abstract>
+    
+    <subject>
+        <topic>subject no authority</topic>
+    </subject>
+    
+    <subject>
+    	<name type="personal">
+    		<namePart>Personal Name Subject</namePart>
+    	</name>
+    </subject>
+    
+       <subject>
+    	<name type="corporate">
+    		<namePart>Corporate Name Subject</namePart>
+    	</name>
+    </subject>
+    
+    <subject authority="lctgm">
+    	<topic>Topical Subject (LCTGM)</topic>
+    </subject>
+     <subject authority="lcsh">
+    	<topic>Topical Subject (LCSH)</topic>
+    </subject>   
+    
+    <subject>
+    	<geographic>Geographic Subject</geographic>
+    </subject>
+    
+    <subject>
+        <cartographics>
+            <coordinates>Latitude and Longitude</coordinates>
+        </cartographics>
+    </subject>
+
+    <subject>
+        <temporal>Chronological Subject</temporal>
+    </subject>
+
+    <genre authority="dct">Type (DCMIType)</genre>
+    <genre authority="aat">Type (AAT)</genre>
+    <genre authority="imt">Type (IMT)</genre>
+    <genre authority="lcsh">Type (LCSH)</genre>
+
+    <genre>Category</genre>
+
+    <language>
+        <languageTerm type="text">Language</languageTerm>
+    </language>
+    
+    <relatedItem type="host" displayLabel="Archival Collection">
+        <titleInfo>
+            <title>Archival Collection</title>
+        </titleInfo>
+        <identifier>Collection Identifier</identifier>
+    </relatedItem>
+
+    <relatedItem type="isReferencedBy" displayLabel="Collection Guide">
+        <location>
+            <url>Collection Guide</url>
+        </location>
+    </relatedItem>
+
+    <relatedItem type="host" displayLabel="Subcollection">
+        <identifier>Subcollection</identifier>
+    </relatedItem>
+    
+    <relatedItem type="series">
+        <titleInfo>
+            <title>Series Name</title>
+        </titleInfo>
+        <identifier>Series Number</identifier>
+    </relatedItem>
+
+    <physicalDescription>
+        <extent>Extent</extent>
+        <extent unit="pages">Number of Pages</extent>
+        <extent unit="HH:MM">Duration</extent>
+        <internetMediaType>Digital Format</internetMediaType>
+        <form>form no authority</form>
+        <form authority="lcgft">form with authority</form>
+    </physicalDescription>
+
+    <tableOfContents>Parts</tableOfContents>
+    <accessCondition type="use and reproduction">Rights Management</accessCondition>
+    
+    <location>
+        <holdingSimple>
+            <copyInformation>
+                <shelfLocator>Box Number</shelfLocator>
+                <shelfLocator>Folder</shelfLocator>
+            </copyInformation>
+        </holdingSimple>
+    </location>
+
+
+
+    <identifier type="local">identifier</identifier>
+    <note type="contact information">contact information</note>
+    <note type="digitization specifications">digitization specifications</note>
+    <note type="local">local note</note>
+</mods>
