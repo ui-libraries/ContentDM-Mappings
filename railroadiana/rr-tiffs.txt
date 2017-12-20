@@ -2237,7 +2237,7 @@
 2275,45ocheyedan02.tif
 2276,45melvin02.tif
 2277,45ocheyedan03.tif
-2278,45harris02.tif
+2278,45harris03.tif
 2279,45ashton02.tif
 2280,45ocheyedan04.tif
 2281,45allendorf02.tif
