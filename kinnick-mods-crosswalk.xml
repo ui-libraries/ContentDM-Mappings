@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mods xmlns="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-6.xsd"
+    version="3.6">
+    
+    <titleInfo>
+        <title><?cdm-element-name title?></title>
+    </titleInfo>
+    
+	<name type="personal">
+        <namePart><?cdm-element-name creator?></namePart>
+        <role>
+            <roleTerm type="text" authority="marcrelator">creator</roleTerm>
+        </role>
+    </name>
+	
+	<originInfo>
+		<publisher><?cdm-element-name publisher?></publisher>
+		<dateCreated keyDate="yes"><?cdm-element-name date-original?></dateCreated>
+		<dateCaptured><?cdm-element-name date-digital?></dateCaptured>
+	</originInfo>
+	
+	<abstract>
+		<?cdm-element-name description?>
+	</abstract>
+	
+	<note type="local"><?cdm-element-name note?></note>
+	
+	<subject authority="lctgm">
+        <topic><?cdm-element-name topical-subject-lctgm?></topic>
+    </subject>
+	
+	<subject authority="lcsh">
+		<topic><?cdm-element-name topical-subject-lcsh?></topic>
+    </subject>
+	
+	<subject authority="lcsh">
+    	<name type="personal">
+    		<namePart><?cdm-element-name personal-name-subject?></namePart>
+    	</name>
+    </subject>
+    
+       <subject authority="lcsh">
+    	<name type="corporate">
+    		<namePart><?cdm-element-name corporate-name-subject?></namePart>
+    	</name>
+    </subject>
+	
+	<subject authority="lcsh" displayLabel="Railroad Line">
+		<topic><?cdm-element-name railroad-line?></topic>
+    </subject>
+	
+	<subject authority="lcsh">
+		<geographic><?cdm-element-name geographic-subject?></geographic>
+	</subject>
+	
+	<subject>
+		<temporal><?cdm-element-name chronological-subject?></temporal>
+	</subject>
+	
+	<genre authority="dcmi"><?cdm-element-name dcmi-type?></genre>
+	
+	<genre authority="aat"><?cdm-element-name aat-type?></genre>
+	
+    <genre authority="imt"><?cdm-element-name imt-type?></genre>
+	
+    <relatedItem type="host" displayLabel="Digital Collection">>
+        <identifier type="collectionName"><?cdm-element-name digital-collection?></identifier>
+    </relatedItem>
+	
+	<relatedItem type="host" displayLabel="Archival Collection">
+        <titleInfo>
+            <title><?cdm-element-name archival-collection?></title>
+        </titleInfo>
+        <identifier><?cdm-element-name collection-identifier?></identifier>
+    </relatedItem>
+	
+	<relatedItem type="series">
+	<titleInfo>
+            <title><?cdm-element-name series?></title>
+        </titleInfo>
+        <identifier><?cdm-element-name series-number?></identifier>
+	</relatedItem>
+	
+	<location>
+        <holdingSimple>
+            <copyInformation>
+                <shelfLocator><?cdm-element-name box?></shelfLocator>
+                <shelfLocator><?cdm-element-name folder?></shelfLocator>
+            </copyInformation>
+        </holdingSimple>
+    </location>
+
+	
+	<name type="corporate" authority="lcsh">
+        <namePart><?cdm-element-name contributing-institution?></namePart>
+        <role>
+            <roleTerm authority="marcrelator" type="text">Contributing Institution</roleTerm>
+        </role>
+    </name>
+	
+	<relatedItem type="isReferencedBy" displayLabel="Collection Guide">
+        <location>
+            <url><?cdm-element-name collection-guide?></url>
+        </location>
+    </relatedItem>
+	
+	<accessCondition type="use and reproduction">
+		<?cdm-element-name rights-management?>
+	</accessCondition>
+	
+	<note type="contact information"><?cdm-element-name contact-information?></note>
+
+	<physicalDescription>
+		<extent type="height"><?cdm-element-name height-cm?></extent>
+		<extent type="width"><?cdm-element-name width-cm?></extent>
+		 <extent unit="HH:MM:SS"><?cdm-element-name duration?></extent>
+	</physicalDescription>
+	
+	<note type="digitization specifications"><?cdm-element-name digitization-specifications?></note>
+	
+	<recordInfo displayLabel="Uploaded by">
+        <recordContentSource><?cdm-element-name uploaded-by?></recordContentSource>        
+    </recordInfo>
+    
+    <recordInfo displayLabel="Cataloged by">
+        <recordContentSource><?cdm-element-name cataloged-by?></recordContentSource>
+    </recordInfo>
+	
+	<subject>
+        <cartographics>
+            <coordinates><?cdm-element-name latitude?></coordinates>
+            <coordinates><?cdm-element-name longitude?></coordinates>
+        </cartographics>
+    </subject>
+	
+	<identifier type="oclc-collection-number">
+		<?cdm-element-name oclc-coll-number?>
+	</identifier>
+	
+	<note type="transcribed"><?cdm-element-name transcribed?></note>
+    
+    
+    <!-- DO NOT REMOVE ANY OF THE FOLLOWING CONTENT -->
+    
+    <!-- This will map the file extension to a content model -->
+    <relatedItem otherType="islandoraCModel" otherTypeAuth="dgi">
+        <identifier><?cdm-element-name contentdm-fileName?></identifier>
+    </relatedItem>
+    
+    <!-- assign collection -->
+    <relatedItem otherType="islandoraCollection" otherTypeAuth="dgi"/>
+    
+    <!-- assign parent/child relationships -->
+    <relatedItem otherType="isChildOf" otherTypeAuth="dgi"/>
+    
+    <!-- This will embed a link the ingest process can follow to retrieve the digital object to place
+         in the OBJ datastream. This PI must be mapped to the element that has the ContentDM item url. -->
+    <relatedItem otherType="OBJ" otherTypeAuth="dgi">
+        <?cdm-element-name item-url?>
+    </relatedItem>
+    
+    
+    <!-- This will temporarily embed the original ContentDM data. It is retrieved by the ingest process and stored
+         in a CDM datastream. -->
+    <relatedItem otherType="CDMDatastream" otherTypeAuth="dgi">
+        <extension><?cdm-element-name record?></extension>
+    </relatedItem>
+    
+    <!-- This will temporarily embed the full text data. It is retrieved by the ingest process and stored
+         in a FULLTEXT datastream. -->
+    <relatedItem otherType="FULLTEXTDatastream" otherTypeAuth="dgi">
+        <extension>
+            <FULLTEXT><?cdm-element-name full-text?></FULLTEXT>
+        </extension>
+    </relatedItem>
+    
+    
+    
+</mods>
