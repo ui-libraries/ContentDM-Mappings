@@ -64,7 +64,7 @@
 	
     <genre authority="imt"><?cdm-element-name imt-type?></genre>
 	
-    <relatedItem type="host" displayLabel="Digital Collection">>
+    <relatedItem type="host" displayLabel="Digital Collection">
         <identifier type="collectionName"><?cdm-element-name digital-collection?></identifier>
     </relatedItem>
 	
