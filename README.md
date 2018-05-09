@@ -24,6 +24,7 @@ Manifest:
 | xsl / perl | Functions |
 | ---------- | ---------- |
 | `uiowa-mods-updates.xsl` | Fixes values of typeOfResource; removes some empty elements; parses /mods/name[count(namePart) > 1] into multiple /mods/name; breaks out ';' delimited /mods/subject/topic values; replaces /mods/titleInfo/title of compound children with the value of the parent title; conflates latitude and longitude to a single /mods/subject/cartographics/coordinates element |
-| `uiowa-mods-updates-single-children.xsl` | Removes compound object when has only one child. |
+| `cdm-mods-updates-single-children.xsl` | Removes compound object when has only one child. |
 | `uiowa-mods-updates.pl` | Sample perl script showing how to use a scripting language to execute processes over the MODS files. Any other scripting language, e.g. python, will work just fine. This particular one has a depency on the Java version of the Saxonica PE XSL processor. You may use any xsl process you like, the xsl transformations here have no dependencies on any proprietary extensions. |
-| `cdm-mods-subcollections-to-compounds.xsl` | Alters standard crosswalk handling of hierarchical compounds - into collections/subcollections - back to nested compounds. UNTESTED. |
+| `cdm-mods-subcollections-to-compounds.xsl` | Alters standard crosswalk handling of hierarchical compounds (= compound structures with more than one level) - into collections/subcollections - back to nested compounds. |
+| `cdm-mods-final-level-to-books.xsl` | Alters standard crosswalk handling of hierarchical compounds by changing any collection containing only image objects (no subcollections) into a book, and its children into pages. |
