@@ -11,14 +11,14 @@
     <xsl:strip-space elements="*"/>
     
     <!-- change collections to compound parents -->
-    <xsl:template match="mods:relatedItem[@otherType = 'islandoraCModel'][. = 'islandora:collectionCModel']/mods:identifier">
+    <xsl:template match="mods:relatedItem[@otherType = 'islandoraCModel'][. = 'islandora:collectionCModel']/mods:identifier" exclude-result-prefixes="#all">
         <identifier xmlns="http://www.loc.gov/mods/v3">islandora:compoundCModel</identifier>
     </xsl:template>
     
-    <!-- change any non-collection object NOT mapping to the root collection by modifying its collection membership 
+    <!-- change any object not mapping to the root collection by modifying its collection membership 
          to an isChildOf relationship -->
     <!-- subcollection PIDS always contain '_' so this is the test. -->
-    <xsl:template match="mods:mods[mods:relatedItem[@otherType = 'islandoraCModel'][. != 'islandora:collectionCModel']]/mods:relatedItem[@otherType = 'islandoraCollection']">
+    <xsl:template match="mods:mods/mods:relatedItem[@otherType = 'islandoraCollection']" exclude-result-prefixes="#all">
         <xsl:choose>
             <xsl:when test="matches(mods:identifier,'_')">
                 <relatedItem xmlns="http://www.loc.gov/mods/v3" otherType="isChildOf">
