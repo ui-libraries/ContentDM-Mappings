@@ -64,7 +64,7 @@
     
     <!-- make images whose parent collection has only one level and nothing but images children a page -->
     <xsl:template match="mods:mods/mods:relatedItem[@otherType = 'islandoraCollection']" exclude-result-prefixes="#all">
-        <xsl:variable name="identifier" select="ancestor::mods:mods/mods:identifier[@type = 'islandora']"/>
+        <xsl:variable name="identifier" select="parent::mods:mods/mods:identifier[@type = 'islandora']"/>
         <xsl:variable name="book-identifier" select="mods:identifier"/>
         <xsl:choose>
             <!-- when: parent is a collection, does not have any subcollections, and none of its children are not images, 
@@ -80,6 +80,26 @@
             <xsl:otherwise><xsl:copy-of select="."/></xsl:otherwise>
         </xsl:choose>
     </xsl:template>
+    
+    <!-- have to change cModel for the pages -->
+    <xsl:template match="mods:mods/mods:relatedItem[@otherType = 'islandoraCModel'][mods:identifier[. != 'islandora:collectionCModel']]" exclude-result-prefixes="#all">
+        <xsl:variable name="identifier" select="parent::mods:mods/mods:identifier[@type = 'islandora']"/>
+        <xsl:variable name="book-identifier" select="parent::mods:mods/mods:relatedItem[@otherType = 'islandoraCollection']/mods:identifier"/>
+        <xsl:choose>
+            <!-- when: parent is a collection, does not have any subcollections, and none of its children are not images, 
+                 it's a page so replace child relationship with collection to isPageOf -->
+            <xsl:when test="$tree//node[@id = $identifier][not(parent::node/node[@cmodel = 'islandora:collectionCModel'])][not(parent::node/node[not(matches(@cmodel,'image'))])]">
+                <xsl:variable name="identifier" select="ancestor::mods:mods/mods:identifier[@type = 'islandora']"/>
+                <relatedItem xmlns="http://www.loc.gov/mods/v3" otherType="islandoraCModel" otherTypeAuth="dgi">
+                    <identifier>islandora:pageCModel</identifier>
+                </relatedItem>
+                <xsl:message>PAGE!!</xsl:message>
+            </xsl:when>
+            <!-- or let it be -->
+            <xsl:otherwise><xsl:copy-of select="."/></xsl:otherwise>
+        </xsl:choose>
+    </xsl:template>
+    
 
     
     <!-- identity transform to copy through all nodes (except those with specific templates modifying them -->    
