@@ -62,8 +62,8 @@
         </xsl:choose>
     </xsl:template>
     
-    <!-- make images whose parent collection has only one level and nothing but images children a page -->
-    <xsl:template match="mods:mods/mods:relatedItem[@otherType = 'islandoraCollection']" exclude-result-prefixes="#all">
+    <!-- make image objects whose parent collection has only one level and nothing but images children a page -->
+    <xsl:template match="mods:mods[matches(mods:relatedItem[@otherType = 'islandoraCModel']/mods:identifier,'image')]/mods:relatedItem[@otherType = 'islandoraCollection']" exclude-result-prefixes="#all">
         <xsl:variable name="identifier" select="parent::mods:mods/mods:identifier[@type = 'islandora']"/>
         <xsl:variable name="book-identifier" select="mods:identifier"/>
         <xsl:choose>
@@ -72,7 +72,7 @@
             <xsl:when test="$tree//node[@id = $identifier][not(parent::node/node[@cmodel = 'islandora:collectionCModel'])][not(parent::node/node[not(matches(@cmodel,'image'))])]">
                 <xsl:variable name="identifier" select="ancestor::mods:mods/mods:identifier[@type = 'islandora']"/>
                 <relatedItem xmlns="http://www.loc.gov/mods/v3" otherType="isPageOf" otherTypeAuth="dgi">
-                    <identifier><xsl:value-of select="$book-identifier"/></identifier>
+                    <identifier><xsl:value-of select="substring-after($book-identifier,':')"/></identifier>
                 </relatedItem>
                 <xsl:message>PAGE!!</xsl:message>
             </xsl:when>

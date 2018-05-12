@@ -65,8 +65,8 @@
         </xsl:choose>
     </xsl:template>
     
-    <!-- fix single children -->
-    <xsl:template match="mods:mods[mods:relatedItem[@otherType = 'isChildOf']]" exclude-result-prefixes="#all">
+    <!-- fix non-compound single children -->
+    <xsl:template match="mods:mods[not(mods:relatedItem[@otherType = 'islandoraCModel']/mods:identifier[. = 'islandora:compoundCModel'])][mods:relatedItem[@otherType = 'isChildOf']]" exclude-result-prefixes="#all">
         <xsl:variable name="child-id" select="mods:identifier[@type = 'islandora']"/>
         <xsl:variable name="parent-id" select="mods:relatedItem[@otherType = 'isChildOf']/mods:identifier"/>
         <xsl:choose>

@@ -22,7 +22,7 @@
         <xsl:choose>
             <xsl:when test="matches(mods:identifier,'_')">
                 <relatedItem xmlns="http://www.loc.gov/mods/v3" otherType="isChildOf">
-                    <xsl:copy-of select="mods:identifier"/>
+                    <identifier><xsl:value-of select="substring-after(mods:identifier,':')"/></identifier>
                 </relatedItem>
             </xsl:when>
             <xsl:otherwise><xsl:copy-of select="."/></xsl:otherwise>
