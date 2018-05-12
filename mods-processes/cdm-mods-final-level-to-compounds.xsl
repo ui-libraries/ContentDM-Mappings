@@ -10,7 +10,7 @@
 
     <xsl:strip-space elements="*"/>
     
-    <xsl:param name="islandora-namespace"/>
+    <xsl:param name="islandora-namespace" required="yes"/>
     <xsl:variable name="islandora-namespace-prefix" select="concat($islandora-namespace,':')"/>
  
     
