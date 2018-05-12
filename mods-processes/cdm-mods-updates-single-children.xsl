@@ -72,7 +72,6 @@
         <xsl:choose>
             <!-- if the only child of a compound, needs rebuild -->
             <xsl:when test="$compounds-children/*:compounds/*:compound/*:child[@id = $child-id]">
-                <xsl:message>single child OF compound <xsl:value-of select="$parent-id"/> at <xsl:value-of select="$child-id"/></xsl:message>
                 <xsl:comment>Reconstructed Compound Child</xsl:comment>
                 <mods  xmlns="http://www.loc.gov/mods/v3">
                     <!-- copy in metadata from compound, except for certain things... -->
@@ -83,6 +82,10 @@
                     <xsl:for-each select="mods:relatedItem[matches(@otherType,'(islandoraCollection|islandoraCModel|OBJ)')]">
                         <xsl:copy-of select="."/>
                     </xsl:for-each>
+                    <!-- if no collection association on the child it gets the parent's -->
+                    <xsl:if test="not(mods:relatedItem[@otherType = 'islandoraCollection'])">
+                        <xsl:copy-of select="ancestor::mods:modsCollection/mods:mods[mods:identifier[@type = 'islandora'][. = $parent-id]]/mods:relatedItem[@otherType = 'islandoraCollection']"/>
+                    </xsl:if>
                 </mods>
             </xsl:when>
             <!-- otherwise pass on through -->
