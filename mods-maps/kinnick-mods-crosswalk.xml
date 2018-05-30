@@ -46,10 +46,6 @@
     	</name>
     </subject>
 	
-	<subject authority="lcsh" displayLabel="Railroad Line">
-		<topic><?cdm-element-name railroad-line?></topic>
-    </subject>
-	
 	<subject authority="lcsh">
 		<geographic><?cdm-element-name geographic-subject?></geographic>
 	</subject>
@@ -173,6 +169,6 @@
         <extension>
             <FULLTEXT><?cdm-element-name full-text?></FULLTEXT>
         </extension>
-    </relatedItem> 
-    
+    </relatedItem>
+      
 </mods>
