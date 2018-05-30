@@ -58,7 +58,7 @@
 		<temporal><?cdm-element-name chronological-subject?></temporal>
 	</subject>
 	
-	<genre authority="dcmi"><?cdm-element-name dcmi-type?></genre>
+    <genre authority="dct"><?cdm-element-name dcmi-type?></genre>
 	
 	<genre authority="aat"><?cdm-element-name aat-type?></genre>
 	
@@ -95,7 +95,7 @@
 	<name type="corporate" authority="lcsh">
         <namePart><?cdm-element-name contributing-institution?></namePart>
         <role>
-            <roleTerm authority="marcrelator" type="text">Contributing Institution</roleTerm>
+            <roleTerm authority="marcrelator" type="text">contributor</roleTerm>
         </role>
     </name>
 	
@@ -112,8 +112,8 @@
 	<note type="contact information"><?cdm-element-name contact-information?></note>
 
 	<physicalDescription>
-		<extent type="height"><?cdm-element-name height-cm?></extent>
-		<extent type="width"><?cdm-element-name width-cm?></extent>
+		<extent unit="height"><?cdm-element-name height-cm?></extent>
+		<extent unit="width"><?cdm-element-name width-cm?></extent>
 		 <extent unit="HH:MM:SS"><?cdm-element-name duration?></extent>
 	</physicalDescription>
 	
@@ -173,8 +173,6 @@
         <extension>
             <FULLTEXT><?cdm-element-name full-text?></FULLTEXT>
         </extension>
-    </relatedItem>
-    
-    
+    </relatedItem> 
     
 </mods>
