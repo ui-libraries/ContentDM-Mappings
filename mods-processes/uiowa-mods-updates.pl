@@ -95,7 +95,7 @@
             </subject>
         </xsl:template>
     
-    <!-- geographic parsing -->
+    <!-- demo geo parsing -->
     <xsl:template match="mods:subject/mods:geographic">
         <xsl:variable name="geo-raw" select="normalize-space(.)"/>
         <xsl:variable name="geo-cooked" select="replace($geo-raw,'\s*--\s*','--')"/>
@@ -108,6 +108,23 @@
                         <state><xsl:value-of select="tokenize($geo-cooked,'--')[2]"/></state>
                         <county><xsl:value-of select="tokenize($geo-cooked,'--')[3]"/></county>
                         <city><xsl:value-of select="tokenize($geo-cooked,'--')[4]"/></city>
+                    </hierarchicalGeographic>
+                </subject>
+            </xsl:when>
+            <xsl:when test="$token-count = 3">
+                <subject xmlns="http://www.loc.gov/mods/v3">
+                    <hierarchicalGeographic>
+                        <country><xsl:value-of select="tokenize($geo-cooked,'--')[1]"/></country>
+                        <state><xsl:value-of select="tokenize($geo-cooked,'--')[2]"/></state>
+                        <county><xsl:value-of select="tokenize($geo-cooked,'--')[3]"/></county>
+                    </hierarchicalGeographic>
+                </subject>
+            </xsl:when>
+            <xsl:when test="$token-count = 2">
+                <subject xmlns="http://www.loc.gov/mods/v3">
+                    <hierarchicalGeographic>
+                        <country><xsl:value-of select="tokenize($geo-cooked,'--')[1]"/></country>
+                        <state><xsl:value-of select="tokenize($geo-cooked,'--')[2]"/></state>
                     </hierarchicalGeographic>
                 </subject>
             </xsl:when>
