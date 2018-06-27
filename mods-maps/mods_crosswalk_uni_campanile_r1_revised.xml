@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mods xmlns="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-6.xsd"
+  version="3.6">
+
+    <titleInfo>
+      <title><?cdm-element-name title?></title>
+    </titleInfo>
+
+    <titleInfo>
+      <subTitle><?cdm-element-name subtitle?></subTitle>
+    </titleInfo>
+
+    <name type="personal" displayLabel="Photographer Name">
+      <namePart><?cdm-element-name photographer?></namePart>
+      <role>
+        <roleTerm type="text" authority="marcrelator">Photographer</roleTerm>
+      </role>
+    </name>
+
+    <note displayLabel="Description"><?cdm-element-name description?></note>
+
+    <subject authority="lcsh">
+      <topic><?cdm-element-name subject?></topic>
+    </subject>
+
+    <subject>
+      <geographic><?cdm-element-name place?></geographic>
+    </subject>
+
+    <subject>
+      <geographic><?cdm-element-name location-depicted?></geographic>
+    </subject>
+
+    <originInfo>
+      <dateCreated><?cdm-element-name date-original?></dateCreated>
+    </originInfo>
+
+    <physicalDescription>
+      <extent><?cdm-element-name object-description?></extent>
+    </physicalDescription>
+    
+    <relatedItem type="host" displayLabel="Repository">
+      <identifier type="repositoryName"><?cdm-element-name repository?></identifier>
+    </relatedItem>
+    
+    <relatedItem type="host" displayLabel="Repository Collection">
+      <titleInfo>
+        <title><?cdm-element-name repository-collection?></title>
+      </titleInfo>
+    </relatedItem>
+
+    <originInfo>
+      <dateCaptured><?cdm-element-name date-digital?></dateCaptured>
+    </originInfo>
+
+    <note type="digitization specifications"><?cdm-element-name digital-reproduction-info?></note>
+
+    <note type="ordering info"><?cdm-element-name ordering-info?></note>
+
+    <accessCondition><?cdm-element-name restrictions?></accessCondition>
+
+    <identifier type="file name"><?cdm-element-name file-name?></identifier>
+
+    <genre authority="lcgft"><?cdm-element-name type?></genre>
+
+    <location>
+      <physicalLocation><?cdm-element-name physical-location?></physicalLocation>
+    </location>
+
+    <recordInfo displayLabel="Date Record Created">
+      <recordCreationDate><?cdm-element-name date-time-record-created?></recordCreationDate>
+    </recordInfo>
+
+    <recordInfo displayLabel="Record Created By">
+      <recordContentSource><?cdm-element-name record-created-by?></recordContentSource>
+    </recordInfo>
+
+    <recordInfo displayLabel="Date Record Modified">
+      <recordChangeDate><?cdm-element-name date-time-record-modified?></recordChangeDate>
+    </recordInfo>
+
+    <recordInfo displayLabel="Record Modified By">
+      <recordContentSource><?cdm-element-name record-modified-by?></recordContentSource>
+    </recordInfo>
+
+    <note displayLabel="Note"><?cdm-element-name note?></note>
+
+    <location>
+      <url><?cdm-element-name item-url?></url>
+    </location>
+
+    <identifier type="oclc number"><?cdm-element-name oclc-number?></identifier>
+
+    <recordInfo>
+      <recordCreationDate><?cdm-element-name date-created?></recordCreationDate>
+    </recordInfo>
+    
+    <recordInfo>
+      <recordChangeDate><?cdm-element-name date-modified?></recordChangeDate>
+    </recordInfo>
+
+    <identifier type="contentdm number"><?cdm-element-name contentdm-number?></identifier>
+
+    <identifier type="contentdm file name"><?cdm-element-name contentdm-fileName?></identifier>
+
+    <identifier type="contentdm file path"><?cdm-element-name contentdm-filePath?></identifier>
+
+    <!-- DO NOT REMOVE ANY OF THE FOLLOWING CONTENT -->
+
+    <!-- This will map the file extension to a content model -->
+    <relatedItem otherType="islandoraCModel" otherTypeAuth="dgi">
+      <identifier><?cdm-element-name contentdm-fileName?></identifier>
+    </relatedItem>
+
+    <!-- assign collection -->
+    <relatedItem otherType="islandoraCollection" otherTypeAuth="dgi"/>
+
+    <!-- assign parent/child relationships -->
+    <relatedItem otherType="isChildOf" otherTypeAuth="dgi"/>
+
+    <!-- This will embed a link the ingest process can follow to retrieve the digital object to place
+         in the OBJ datastream. This PI must be mapped to the element that has the ContentDM item url. -->
+    <relatedItem otherType="OBJ" otherTypeAuth="dgi">
+      <?cdm-element-name item-url?>
+    </relatedItem>
+
+
+    <!-- This will temporarily embed the original ContentDM data. It is retrieved by the ingest process and stored
+         in a CDM datastream. -->
+    <relatedItem otherType="CDMDatastream" otherTypeAuth="dgi">
+      <extension><?cdm-element-name record?></extension>
+    </relatedItem>
+
+    <!-- This will temporarily embed the full text data. It is retrieved by the ingest process and stored
+         in a FULLTEXT datastream. -->
+    <relatedItem otherType="FULLTEXTDatastream" otherTypeAuth="dgi">
+      <extension>
+        <FULLTEXT><?cdm-element-name full-text?></FULLTEXT>
+      </extension>
+    </relatedItem>
+
+
+
+</mods>
