@@ -21,9 +21,11 @@ Manifest:
 | NA | NA |
 
 ## MODS Processes
-| xsl / perl | Functions |
 
 ### Data Updates
+
+| xsl / perl | Functions |
+| ---------- | ---------- |
 | `uiowa-mods-updates.xsl` | Fixes values of typeOfResource; removes some empty elements; parses /mods/name[count(namePart) > 1] into multiple /mods/name; breaks out ';' delimited /mods/subject/topic values; replaces /mods/titleInfo/title of compound children with the value of the parent title; conflates latitude and longitude to a single /mods/subject/cartographics/coordinates element |
 | `uiowa-mods-updates.pl` | Sample perl script showing how to use a scripting language to execute processes over the MODS files. Any other scripting language, e.g. python, will work just fine. This particular one has a depency on the Java version of the Saxonica PE XSL processor. You may use any xsl processor you like, the xsl transformations here use no proprietary extensions. |
 | `split-mods-files.xsl` | For handling very large files it is sometimes required to split output files into smaller batches. Set the `$object-per-file` param to the number of objects per file. |
