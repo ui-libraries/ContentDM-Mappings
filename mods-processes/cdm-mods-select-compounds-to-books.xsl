@@ -40,7 +40,6 @@
             <!-- e.g. when the title of the MODS record contains 'scrapbook' it becomes a book -->
             <xsl:when test="../../mods:titleInfo/mods:title[contains(lower-case(.),'scrapbook')]">
                 <identifier xmlns="http://www.loc.gov/mods/v3">islandora:bookCModel</identifier>
-                <xsl:message>BOOOKIEEEEE!!!!</xsl:message>
             </xsl:when>
             <!-- if not it stays a compound -->
             <xsl:otherwise>
@@ -87,6 +86,26 @@
                     <xsl:apply-templates select="@*[name() != 'otherType'] | * | text() | comment() | processing-instruction()"/>
                 </relatedItem>
             </xsl:when>
+            <xsl:otherwise>
+                <xsl:copy>
+                    <xsl:apply-templates select="@* | * | text() | comment() | processing-instruction()"/>
+                </xsl:copy>
+            </xsl:otherwise>
+        </xsl:choose>
+    </xsl:template>
+    
+    <!-- Remove collection association for book pages. 
+         YOUR CRITERIA MUST MATCH that used for compounds to books (preceding)
+    -->
+    <xsl:template match="mods:mods/mods:relatedItem[@otherType = 'islandoraCollection']" exclude-result-prefixes="#all">
+        <!-- When the parent of this child is being turned into a book, this relationship should be changed to isPageOf -->
+        <!-- Get the parent ID -->
+        <xsl:variable name="parent-id" select="normalize-space(ancestor::mods:mods/mods:relatedItem[@otherType = 'isChildOf']/mods:identifier/text())"/>
+        <!-- Get the parent record for reference -->
+        <xsl:variable name="parent-record" select="key('mods-by-pid',$parent-id,ancestor::mods:modsCollection)"/>
+        <xsl:choose>
+            <!-- Here is where the selection takes place. -->
+            <xsl:when test="$parent-record/mods:titleInfo/mods:title[contains(lower-case(.),'scrapbook')]"/>
             <xsl:otherwise>
                 <xsl:copy>
                     <xsl:apply-templates select="@* | * | text() | comment() | processing-instruction()"/>
