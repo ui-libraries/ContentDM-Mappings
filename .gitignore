@@ -1,2 +1,4 @@
 /mods-processes/in/*.*
+/mods-processes/in/bak/*.*
 /mods-processes/out/*.*
+/mods-processes/_tmp.*

@@ -15,35 +15,35 @@
     <xsl:variable name="islandora-namespace-prefix" select="concat($islandora-namespace,':')"/>
  
     
-    <!-- build hierarchy for reference -->
+    <!-- build hierarchy for reference, top level collections then recurse -->
     <xsl:variable name="tree" exclude-result-prefixes="#all">
         <tree>
             <xsl:for-each
-                select="/mods:modsCollection/mods:mods[mods:relatedItem[@otherType = 'islandoraCollection'][not(contains(., '_'))]]">
-                <xsl:variable name="node-id" select="concat('ui:',mods:identifier[@type = 'islandora'])"/>
+                select="/mods:modsCollection/mods:mods[mods:relatedItem[@otherType = 'islandoraCModel']/mods:identifier[. = 'islandora:collectionCModel']][mods:relatedItem[@otherType = 'islandoraCollection'][not(contains(., '_'))]]">
+                    <xsl:variable name="node-id" select="concat($islandora-namespace-prefix,mods:identifier[@type = 'islandora'])"/>
+                    <xsl:variable name="cmodel"
+                        select="mods:relatedItem[@otherType = 'islandoraCModel']/mods:identifier"/>
+                    <xsl:call-template name="recurse-nodes">
+                        <xsl:with-param name="node-id" select="$node-id"/>
+                        <xsl:with-param name="cmodel" select="$cmodel"/>
+                    </xsl:call-template>
+            </xsl:for-each>
+        </tree>
+    </xsl:variable>
+    
+    <xsl:template name="recurse-nodes" exclude-result-prefixes="#all">
+        <xsl:param name="node-id"/>
+        <xsl:param name="cmodel"/>
+        <node id="{substring-after($node-id,$islandora-namespace-prefix)}" cmodel="{$cmodel}">
+            <xsl:for-each
+                select="/mods:modsCollection/mods:mods[mods:relatedItem[@otherType = 'islandoraCollection']/mods:identifier[. = $node-id]]">
+                <xsl:variable name="node-id" select="concat($islandora-namespace-prefix,mods:identifier[@type = 'islandora'])"/>
                 <xsl:variable name="cmodel"
                     select="mods:relatedItem[@otherType = 'islandoraCModel']/mods:identifier"/>
                 <xsl:call-template name="recurse-nodes">
                     <xsl:with-param name="node-id" select="$node-id"/>
                     <xsl:with-param name="cmodel" select="$cmodel"/>
                 </xsl:call-template>
-            </xsl:for-each>
-        </tree>
-    </xsl:variable>
-    
-    <xsl:template name="recurse-nodes">
-        <xsl:param name="node-id"/>
-        <xsl:param name="cmodel"/>
-        <node id="{substring-after($node-id,$islandora-namespace-prefix)}" cmodel="{$cmodel}">
-            <xsl:for-each
-                select="/mods:modsCollection/mods:mods[mods:relatedItem[@otherType = 'islandoraCollection']/mods:identifier[. = $node-id]]">
-                <xsl:variable name="node-id" select="concat('ui:',mods:identifier[@type = 'islandora'])"/>
-                <xsl:variable name="cmodel"
-                    select="mods:relatedItem[@otherType = 'islandoraCModel']/mods:identifier"/>
-                    <xsl:call-template name="recurse-nodes">
-                        <xsl:with-param name="node-id" select="$node-id"/>
-                        <xsl:with-param name="cmodel" select="$cmodel"/>
-                    </xsl:call-template>
             </xsl:for-each>
         </node>
     </xsl:template>
@@ -55,7 +55,6 @@
             <!-- when this collection only has image children make it a book -->
             <xsl:when test="$tree//node[@id = $identifier][not(descendant::node[@cmodel = 'islandora:collectionCModel']) and not(node[not(matches(@cmodel,'image'))])]">
                 <identifier xmlns="http://www.loc.gov/mods/v3">islandora:bookCModel</identifier>
-                <xsl:message>BOOK!!</xsl:message>
             </xsl:when>
             <!--  or let it be -->
             <xsl:otherwise><xsl:copy-of select="."/></xsl:otherwise>
@@ -74,7 +73,6 @@
                 <relatedItem xmlns="http://www.loc.gov/mods/v3" otherType="isPageOf" otherTypeAuth="dgi">
                     <identifier><xsl:value-of select="substring-after($book-identifier,':')"/></identifier>
                 </relatedItem>
-                <xsl:message>PAGE!!</xsl:message>
             </xsl:when>
             <!-- or let it be -->
             <xsl:otherwise><xsl:copy-of select="."/></xsl:otherwise>
@@ -93,7 +91,6 @@
                 <relatedItem xmlns="http://www.loc.gov/mods/v3" otherType="islandoraCModel" otherTypeAuth="dgi">
                     <identifier>islandora:pageCModel</identifier>
                 </relatedItem>
-                <xsl:message>PAGE!!</xsl:message>
             </xsl:when>
             <!-- or let it be -->
             <xsl:otherwise><xsl:copy-of select="."/></xsl:otherwise>

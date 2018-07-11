@@ -5,7 +5,8 @@
     exclude-result-prefixes="xs"  extension-element-prefixes="saxon"
     version="2.0">
     
-    <!-- Template to change final level in hierarchy to a compound. -->
+    <!-- Template to change final level in hierarchy to books. -->
+    <!-- This is not handling any single page books at this point, i.e. changing them to standalone images. -->
     <xsl:output method="xml" encoding="UTF-8" indent="yes"/>
 
     <xsl:strip-space elements="*"/>
@@ -19,13 +20,20 @@
         <tree>
             <xsl:for-each
                 select="/mods:modsCollection/mods:mods[mods:relatedItem[@otherType = 'islandoraCModel']/mods:identifier[. = 'islandora:collectionCModel']][mods:relatedItem[@otherType = 'islandoraCollection'][not(contains(., '_'))]]">
-                <xsl:variable name="node-id" select="concat($islandora-namespace-prefix,mods:identifier[@type = 'islandora'])"/>
-                <xsl:variable name="cmodel"
-                    select="mods:relatedItem[@otherType = 'islandoraCModel']/mods:identifier"/>
-                <xsl:call-template name="recurse-nodes">
-                    <xsl:with-param name="node-id" select="$node-id"/>
-                    <xsl:with-param name="cmodel" select="$cmodel"/>
-                </xsl:call-template>
+                <!-- This xsl:if/@test will filter out nodes that should be candidates to become a book. 
+                     The test can be changed as needed, this is just an example that would only allow collections objects
+                     containing 'scrapbook' in the title to be processed into books 
+                -->
+                <xsl:if test="contains(lower-case(mods:titleInfo/mods:title), 'scrapbook')">
+                    <xsl:variable name="node-id"
+                        select="concat($islandora-namespace-prefix, mods:identifier[@type = 'islandora'])"/>
+                    <xsl:variable name="cmodel"
+                        select="mods:relatedItem[@otherType = 'islandoraCModel']/mods:identifier"/>
+                    <xsl:call-template name="recurse-nodes">
+                        <xsl:with-param name="node-id" select="$node-id"/>
+                        <xsl:with-param name="cmodel" select="$cmodel"/>
+                    </xsl:call-template>
+                </xsl:if>
             </xsl:for-each>
         </tree>
     </xsl:variable>
@@ -39,38 +47,58 @@
                 <xsl:variable name="node-id" select="concat($islandora-namespace-prefix,mods:identifier[@type = 'islandora'])"/>
                 <xsl:variable name="cmodel"
                     select="mods:relatedItem[@otherType = 'islandoraCModel']/mods:identifier"/>
-                    <xsl:call-template name="recurse-nodes">
-                        <xsl:with-param name="node-id" select="$node-id"/>
-                        <xsl:with-param name="cmodel" select="$cmodel"/>
-                    </xsl:call-template>
+                <xsl:call-template name="recurse-nodes">
+                    <xsl:with-param name="node-id" select="$node-id"/>
+                    <xsl:with-param name="cmodel" select="$cmodel"/>
+                </xsl:call-template>
             </xsl:for-each>
         </node>
     </xsl:template>
     
-   <!-- make collections with one level of image children a compound -->
+   <!-- make collections with one level of image children, and meeting selection criteria, a book -->
     <xsl:template match="mods:mods/mods:relatedItem[@otherType = 'islandoraCModel']/mods:identifier[. = 'islandora:collectionCModel']" exclude-result-prefixes="#all">
         <xsl:variable name="identifier" select="ancestor::mods:mods/mods:identifier[@type = 'islandora']"/>
         <xsl:choose>
-            <!-- when this collection only has image children make it a compound -->
+            <!-- when this collection only has image children make it a book -->
             <xsl:when test="$tree//node[@id = $identifier][not(descendant::node[@cmodel = 'islandora:collectionCModel']) and not(node[not(matches(@cmodel,'image'))])]">
-                <identifier xmlns="http://www.loc.gov/mods/v3">islandora:compoundCModel</identifier>
+                <identifier xmlns="http://www.loc.gov/mods/v3">islandora:bookCModel</identifier>
             </xsl:when>
             <!--  or let it be -->
             <xsl:otherwise><xsl:copy-of select="."/></xsl:otherwise>
         </xsl:choose>
     </xsl:template>
     
-    <!-- make image objects whose parent collection has only one level and nothing but images children a compound child -->
+    <!-- make image objects whose parent collection has only one level and nothing but images children,
+         and meeting selection criteria, a page
+    -->
     <xsl:template match="mods:mods[matches(mods:relatedItem[@otherType = 'islandoraCModel']/mods:identifier,'image')]/mods:relatedItem[@otherType = 'islandoraCollection']" exclude-result-prefixes="#all">
         <xsl:variable name="identifier" select="parent::mods:mods/mods:identifier[@type = 'islandora']"/>
         <xsl:variable name="book-identifier" select="mods:identifier"/>
         <xsl:choose>
             <!-- when: parent is a collection, does not have any subcollections, and none of its children are not images, 
-                 this object gets isChildOf relationship to it -->
+                 it's a page so replace child relationship with collection to isPageOf -->
             <xsl:when test="$tree//node[@id = $identifier][not(parent::node/node[@cmodel = 'islandora:collectionCModel'])][not(parent::node/node[not(matches(@cmodel,'image'))])]">
                 <xsl:variable name="identifier" select="ancestor::mods:mods/mods:identifier[@type = 'islandora']"/>
-                <relatedItem xmlns="http://www.loc.gov/mods/v3" otherType="isChildOf" otherTypeAuth="dgi">
+                <relatedItem xmlns="http://www.loc.gov/mods/v3" otherType="isPageOf" otherTypeAuth="dgi">
                     <identifier><xsl:value-of select="substring-after($book-identifier,':')"/></identifier>
+                </relatedItem>
+            </xsl:when>
+            <!-- or let it be -->
+            <xsl:otherwise><xsl:copy-of select="."/></xsl:otherwise>
+        </xsl:choose>
+    </xsl:template>
+    
+    <!-- have to change cModel for the pages -->
+    <xsl:template match="mods:mods/mods:relatedItem[@otherType = 'islandoraCModel'][mods:identifier[. != 'islandora:collectionCModel']]" exclude-result-prefixes="#all">
+        <xsl:variable name="identifier" select="parent::mods:mods/mods:identifier[@type = 'islandora']"/>
+        <xsl:variable name="book-identifier" select="parent::mods:mods/mods:relatedItem[@otherType = 'islandoraCollection']/mods:identifier"/>
+        <xsl:choose>
+            <!-- when: parent is a collection, does not have any subcollections, and none of its children are not images, 
+                 it's a page so replace child relationship with collection to isPageOf -->
+            <xsl:when test="$tree//node[@id = $identifier][not(parent::node/node[@cmodel = 'islandora:collectionCModel'])][not(parent::node/node[not(matches(@cmodel,'image'))])]">
+                <xsl:variable name="identifier" select="ancestor::mods:mods/mods:identifier[@type = 'islandora']"/>
+                <relatedItem xmlns="http://www.loc.gov/mods/v3" otherType="islandoraCModel" otherTypeAuth="dgi">
+                    <identifier>islandora:pageCModel</identifier>
                 </relatedItem>
             </xsl:when>
             <!-- or let it be -->

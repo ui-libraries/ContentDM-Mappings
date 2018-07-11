@@ -51,18 +51,16 @@
     </xsl:template>
     
     <!-- demo geo parsing -->
-    <xsl:template match="mods:subject/mods:geographic">
+    <xsl:template match="mods:subject/mods:geographic" exclude-result-prefixes="#all">
         <xsl:variable name="geo-raw" select="normalize-space(.)"/>
         <xsl:variable name="geo-cooked" select="replace($geo-raw,'\s*--\s*','--')"/>
         <xsl:variable name="token-count" select="count(tokenize($geo-cooked,'--'))"/>
         <xsl:choose>
             <xsl:when test="$token-count = 2">
-                <subject xmlns="http://www.loc.gov/mods/v3">
-                    <hierarchicalGeographic>
+                    <hierarchicalGeographic xmlns="http://www.loc.gov/mods/v3">
                         <country><xsl:value-of select="tokenize($geo-cooked,'--')[1]"/></country>
                         <state><xsl:value-of select="tokenize($geo-cooked,'--')[2]"/></state>
                     </hierarchicalGeographic>
-                </subject>
             </xsl:when>
         </xsl:choose>
     </xsl:template>
