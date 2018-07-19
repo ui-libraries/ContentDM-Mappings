@@ -124,7 +124,7 @@
 
     <identifier type="oclc-collection"><?cdm-element-name oclc-coll-number?></identifier>
 
-    <identifier type="file name"><?cdm-element-name contentdm-fileName?></identifier>
+    <identifier type="file name"><?cdm-element-name file-name?></identifier>
 
     <!-- DO NOT REMOVE ANY OF THE FOLLOWING CONTENT -->
 
