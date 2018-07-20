@@ -130,7 +130,7 @@
                     <hierarchicalGeographic>
                         <country><xsl:value-of select="tokenize($geo-cooked,'--')[1]"/></country>
                         <state><xsl:value-of select="tokenize($geo-cooked,'--')[2]"/></state>
-                        <county><xsl:value-of select="tokenize($geo-cooked,'--')[3]"/></county>
+                        <city><xsl:value-of select="tokenize($geo-cooked,'--')[3]"/></city>
                     </hierarchicalGeographic>
                 </subject>
             </xsl:when>
