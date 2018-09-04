@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:saxon="http://saxon.sf.net/"
-    xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:mods="http://www.loc.gov/mods/v3"
-    xmlns:cdm="http://www.oclc.org/contentdm"
-    exclude-result-prefixes="xs"  extension-element-prefixes="saxon"
-    version="2.0">
+    <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:saxon="http://saxon.sf.net/"
+        xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:mods="http://www.loc.gov/mods/v3"
+        xmlns:cdm="http://www.oclc.org/contentdm"
+        exclude-result-prefixes="xs"  extension-element-prefixes="saxon"
+        version="2.0">
         
         <!-- Template for cleanup of ContentDM-to-MODS crosswalk output prior to ingest to Islandora.  -->
         
@@ -60,7 +60,72 @@
                     </name>
                 </subject>
             </xsl:for-each>
-        </xsl:template>    
+        </xsl:template>   
+        
+        <!--to tokenize name subjects-->
+        <xsl:template match="mods:subject[mods:name and not(mods:topic)]" exclude-result-prefixes="#all">
+            <xsl:variable name="subject-attributes" select="@*"/>
+            <xsl:for-each select="mods:name/mods:namePart">
+                <xsl:for-each select="tokenize(.,';')">
+                    <subject xmlns="http://www.loc.gov/mods/v3">
+                        <name>
+                            <xsl:copy-of select="$subject-attributes"/>
+                            <namePart><xsl:value-of select="normalize-space(.)"/></namePart>
+                        </name>
+                    </subject>
+                </xsl:for-each>
+            </xsl:for-each>
+        </xsl:template>
+         
+        <!--to tokenize names: personal and corporate-->
+        <xsl:template match="mods:name[mods:namePart]" exclude-result-prefixes="#all">
+            <xsl:variable name="name-attributes" select="@*"/>
+            <xsl:for-each select="mods:namePart">
+                <xsl:for-each select="tokenize(.,';')">
+                    <name xmlns="http://www.loc.gov/mods/v3">
+                        <xsl:copy-of select="$name-attributes"/>
+                        <namePart><xsl:value-of select="normalize-space(.)"/></namePart>
+                    </name>
+                </xsl:for-each>
+            </xsl:for-each>
+        </xsl:template>
+        
+        <!--to tokenize temporal subjects-->
+        <xsl:template match="mods:subject[mods:temporal]" exclude-result-prefixes="#all">
+            <xsl:variable name="subject-attributes" select="@*"/>
+            <xsl:for-each select="mods:temporal">
+                <xsl:for-each select="tokenize(.,';')">
+                    <subject xmlns="http://www.loc.gov/mods/v3">
+                        <xsl:copy-of select="$subject-attributes"/>
+                        <temporal><xsl:value-of select="normalize-space(.)"/></temporal>
+                    </subject>
+                </xsl:for-each>
+            </xsl:for-each>
+        </xsl:template>   
+        
+        <!--   to tokenize genre-->
+        <xsl:template match="mods:genre" exclude-result-prefixes="#all">
+            <xsl:variable name="genre-attributes" select="@*"/>
+            <xsl:for-each select="tokenize(.,';')">
+                <genre xmlns="http://www.loc.gov/mods/v3">
+                    <xsl:copy-of select="$genre-attributes"/>
+                    <xsl:value-of select="normalize-space(.)"/>
+                </genre>
+            </xsl:for-each>
+        </xsl:template>
+        
+        <!--   to tokenize publishers -->
+        <xsl:template match="mods:originInfo[mods:publisher]" exclude-result-prefixes="#all">
+            <xsl:variable name="originInfo-attributes" select="@*"/>
+            <xsl:for-each select="mods:publisher">
+            <xsl:for-each select="tokenize(.,';')">
+                <originInfo xmlns="http://www.loc.gov/mods/v3">
+                    <xsl:copy-of select="$originInfo-attributes"/>
+                    <publisher><xsl:value-of select="normalize-space(.)"/></publisher>
+                </originInfo>
+            </xsl:for-each>
+            </xsl:for-each>
+        </xsl:template>
         
         <!-- bust out names that have more than one namePart (names) -->
         <xsl:template match="mods:name" exclude-result-prefixes="#all">
@@ -94,58 +159,55 @@
                 </cartographics>
             </subject>
         </xsl:template>
-    
-    <!-- demo geo parsing -->
-    <xsl:template match="mods:subject/mods:geographic">
-        <xsl:variable name="geo-raw" select="normalize-space(.)"/>
-        <xsl:variable name="geo-cooked" select="replace($geo-raw,'\s*--\s*','--')"/>
-        <xsl:variable name="token-count" select="count(tokenize($geo-cooked,'--'))"/>
         
-      <!--  Divides the two parts of a Japan place into country and city, rather than country and state (like for U.S.)-->
-        
-        <xsl:if test="tokenize($geo-cooked,'--')[1]='Japan'"> 
-            <subject xmlns="http://www.loc.gov/mods/v3">
-                <hierarchicalGeographic>
-                    <country><xsl:value-of select="tokenize($geo-cooked,'--')[1]"/></country>
-                    <city><xsl:value-of select="tokenize($geo-cooked,'--')[2]"/></city>
-                </hierarchicalGeographic>
-            </subject>
-        </xsl:if>
-        
-    <!--    Divides the geographic subjects correctly for the United States, when there is a COUNTY level-->
-            <xsl:if test="tokenize($geo-cooked,'--')[1]='United States'">
-        <xsl:choose>
-            <xsl:when test="$token-count = 4">
+        <!-- demo geo parsing -->
+        <xsl:template match="mods:subject/mods:geographic" exclude-result-prefixes="#all">
+            <xsl:variable name="geo-raw" select="normalize-space(.)"/>
+            <xsl:variable name="geo-cooked" select="replace($geo-raw,'\s*--\s*','--')"/>
+            <xsl:variable name="token-count" select="count(tokenize($geo-cooked,'--'))"/>
+            
+            <xsl:if test="tokenize($geo-cooked,'--')[1]='Japan'"> 
                 <subject xmlns="http://www.loc.gov/mods/v3">
                     <hierarchicalGeographic>
+                        <country><xsl:value-of select="tokenize($geo-cooked,'--')[1]"/></country>
+                        <city><xsl:value-of select="tokenize($geo-cooked,'--')[2]"/></city>
+                    </hierarchicalGeographic>
+                </subject>
+            </xsl:if>
+            
+            <xsl:if test="tokenize($geo-cooked,'--')[1]='United States'">        
+            <xsl:choose>
+                <xsl:when test="$token-count = 4">
+                    <hierarchicalGeographic xmlns="http://www.loc.gov/mods/v3">
                         <country><xsl:value-of select="tokenize($geo-cooked,'--')[1]"/></country>
                         <state><xsl:value-of select="tokenize($geo-cooked,'--')[2]"/></state>
                         <county><xsl:value-of select="tokenize($geo-cooked,'--')[3]"/></county>
                         <city><xsl:value-of select="tokenize($geo-cooked,'--')[4]"/></city>
                     </hierarchicalGeographic>
-                </subject>
-            </xsl:when>
-            <xsl:when test="$token-count = 3">
-                <subject xmlns="http://www.loc.gov/mods/v3">
-                    <hierarchicalGeographic>
+                </xsl:when>
+                <xsl:when test="$token-count = 3">
+                    <hierarchicalGeographic xmlns="http://www.loc.gov/mods/v3">
                         <country><xsl:value-of select="tokenize($geo-cooked,'--')[1]"/></country>
                         <state><xsl:value-of select="tokenize($geo-cooked,'--')[2]"/></state>
                         <city><xsl:value-of select="tokenize($geo-cooked,'--')[3]"/></city>
                     </hierarchicalGeographic>
-                </subject>
-            </xsl:when>
-            <xsl:when test="$token-count = 2">
-                <subject xmlns="http://www.loc.gov/mods/v3">
-                    <hierarchicalGeographic>
+                </xsl:when>
+                <xsl:when test="$token-count = 2">
+                    <hierarchicalGeographic xmlns="http://www.loc.gov/mods/v3">
                         <country><xsl:value-of select="tokenize($geo-cooked,'--')[1]"/></country>
                         <state><xsl:value-of select="tokenize($geo-cooked,'--')[2]"/></state>
                     </hierarchicalGeographic>
-                </subject>
-            </xsl:when>
-        </xsl:choose>
+                </xsl:when>
+                <!-- always have default processing -->
+                <xsl:otherwise>
+                    <xsl:copy>
+                        <xsl:apply-templates select="@* | *| text() | comment() | processing-instruction()"/>
+                    </xsl:copy>
+                </xsl:otherwise>
+            </xsl:choose>
             </xsl:if>
-    </xsl:template>
-    
+        </xsl:template>
+        
         <!-- child objects should have title of their parents -->
         <xsl:template match="mods:mods[mods:relatedItem[@otherType = 'isChildOf']]/mods:titleInfo/mods:title" exclude-result-prefixes="#all">
             <!-- get parent title -->
@@ -159,18 +221,18 @@
             <identifier xmlns="http://www.loc.gov/mods/v3"><xsl:value-of select="replace(.,'islandora:','uni:')"/></identifier>
         </xsl:template>
         
-        <!-- conflate height and width with unit of measurement -->
+        <!-- conflate height and width? TBC -->
         <xsl:template match="mods:physicalDescription[mods:extent[@unit = 'height'][normalize-space()] and mods:extent[@unit = 'width'][normalize-space()]]" exclude-result-prefixes="#all">
-        <!--<xsl:template match="mods:physicalDescription/mods:extent" exclude-result-prefixes="#all">-->
-        <physicalDescription xmlns="http://www.loc.gov/mods/v3">
+            <!--<xsl:template match="mods:physicalDescription/mods:extent" exclude-result-prefixes="#all">-->
+            <physicalDescription xmlns="http://www.loc.gov/mods/v3">
                 <!-- process all other children -->
                 <xsl:apply-templates select="*[not(self::mods:extent[matches(@unit,'(height|width)')])]"/>
                 <!-- build new extent -->
-                 <!--<extent><xsl:value-of select="concat(mods:physicalDescription/mods:extent[1],' x ',mods:physicalDescription/mods:extent[2], ' cm')"/></extent>-->
-    
+                <!--<extent><xsl:value-of select="concat(mods:physicalDescription/mods:extent[1],' x ',mods:physicalDescription/mods:extent[2], ' cm')"/></extent>-->
+                
                 <extent><xsl:value-of select="concat(mods:extent[@unit = 'height'], ' × ', mods:extent[@unit = 'width'], ' cm')"/></extent>
             </physicalDescription>
-    </xsl:template>
+        </xsl:template>
         <!--</xsl:template>-->
         
         <!-- remove some empty elements -->
@@ -186,4 +248,4 @@
             | mods:note[not(normalize-space())]
             | mods:relatedItem[@type = 'host'][mods:identifier[@type = 'collectionName'] or not(*)]
             | mods:relatedItem[@otherType = 'FULLTEXTDatastream'][normalize-space(mods:extension) = '']"/>
-</xsl:stylesheet>
+    </xsl:stylesheet> 
