@@ -166,13 +166,11 @@
             <xsl:variable name="geo-cooked" select="replace($geo-raw,'\s*--\s*','--')"/>
             <xsl:variable name="token-count" select="count(tokenize($geo-cooked,'--'))"/>
             
-            <xsl:if test="tokenize($geo-cooked,'--')[1]='Japan'"> 
-                <subject xmlns="http://www.loc.gov/mods/v3">
-                    <hierarchicalGeographic>
+            <xsl:if test="tokenize($geo-cooked,'--')[1]='Japan'">
+                    <hierarchicalGeographic xmlns="http://www.loc.gov/mods/v3">
                         <country><xsl:value-of select="tokenize($geo-cooked,'--')[1]"/></country>
                         <city><xsl:value-of select="tokenize($geo-cooked,'--')[2]"/></city>
                     </hierarchicalGeographic>
-                </subject>
             </xsl:if>
             
             <xsl:if test="tokenize($geo-cooked,'--')[1]='United States'">        
