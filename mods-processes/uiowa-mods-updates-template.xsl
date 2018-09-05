@@ -101,7 +101,20 @@
                     </subject>
                 </xsl:for-each>
             </xsl:for-each>
-        </xsl:template>   
+        </xsl:template>  
+        
+        <!--to tokenize geographic subjects-->
+        <xsl:template match="mods:subject[mods:geographic]" exclude-result-prefixes="#all">
+            <xsl:variable name="subject-attributes" select="@*"/>
+            <xsl:for-each select="mods:geographic">
+                <xsl:for-each select="tokenize(.,';')">
+                    <subject xmlns="http://www.loc.gov/mods/v3">
+                        <xsl:copy-of select="$subject-attributes"/>
+                        <geographic><xsl:value-of select="normalize-space(.)"/></geographic>
+                    </subject>
+                </xsl:for-each>
+            </xsl:for-each>
+        </xsl:template>         
         
         <!--   to tokenize genre-->
         <xsl:template match="mods:genre" exclude-result-prefixes="#all">
