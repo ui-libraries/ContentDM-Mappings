@@ -141,7 +141,7 @@
         </xsl:template>
         
         <!-- bust out names that have more than one namePart (names) -->
-        <xsl:template match="mods:name" exclude-result-prefixes="#all">
+    <xsl:template match="mods:name[mods:namePart[normalize-space()]]" exclude-result-prefixes="#all">
             <xsl:variable name="name-attributes" select="@*"/>
             <xsl:choose>
                 <!--  more than one namePart? fix up -->
