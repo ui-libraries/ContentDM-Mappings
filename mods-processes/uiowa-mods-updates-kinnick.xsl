@@ -52,39 +52,37 @@
         
         <xsl:template match="mods:subject[not(mods:topic) and mods:name]" exclude-result-prefixes="#all">
             <xsl:variable name="subject-attributes" select="@*"/>
-            <xsl:for-each select="mods:name/mods:namePart">
-                <subject xmlns="http://www.loc.gov/mods/v3">
-                    <xsl:copy-of select="$subject-attributes"/>
-                    <name>
-                        <xsl:copy-of select="., parent::mods:name/mods:role"/>
-                    </name>
-                </subject>
-            </xsl:for-each>
-        </xsl:template>   
-        
-        <!--to tokenize name subjects-->
-        <xsl:template match="mods:subject[mods:name and not(mods:topic)]" exclude-result-prefixes="#all">
-            <xsl:variable name="subject-attributes" select="@*"/>
-            <xsl:for-each select="mods:name/mods:namePart">
+            <xsl:for-each select="mods:name/mods:namePart[normalize-space()]">
+                <xsl:variable name="namepart-siblings" select="*[not(self::mods:namePart)]"/>
                 <xsl:for-each select="tokenize(.,';')">
                     <subject xmlns="http://www.loc.gov/mods/v3">
+                        <xsl:copy-of select="$subject-attributes"/>
                         <name>
-                            <xsl:copy-of select="$subject-attributes"/>
                             <namePart><xsl:value-of select="normalize-space(.)"/></namePart>
+                            <!-- each name should include the namepart siblings -->
+                            <xsl:apply-templates select="$namepart-siblings"/>
                         </name>
                     </subject>
                 </xsl:for-each>
             </xsl:for-each>
-        </xsl:template>
-         
-        <!--to tokenize names: personal and corporate-->
-        <xsl:template match="mods:name[mods:namePart]" exclude-result-prefixes="#all">
+        </xsl:template>   
+        
+        <!--  
+             whether ';' present or not, tokenizing on it will work correctly
+             this approach negates approach using multiple templates to handle
+             multiple namePart and nameParts with ';'
+        -->
+        <xsl:template match="mods:mods/mods:name[mods:namePart[normalize-space()]]" exclude-result-prefixes="#all">
             <xsl:variable name="name-attributes" select="@*"/>
+            <!-- store sibling elements, e.g. role -->
+            <xsl:variable name="namepart-siblings" select="*[not(self::mods:namePart)]"/>
             <xsl:for-each select="mods:namePart">
                 <xsl:for-each select="tokenize(.,';')">
                     <name xmlns="http://www.loc.gov/mods/v3">
                         <xsl:copy-of select="$name-attributes"/>
                         <namePart><xsl:value-of select="normalize-space(.)"/></namePart>
+                        <!-- each name should include the namepart siblings -->
+                        <xsl:apply-templates select="$namepart-siblings"/>
                     </name>
                 </xsl:for-each>
             </xsl:for-each>
@@ -127,27 +125,7 @@
             </xsl:for-each>
         </xsl:template>
         
-        <!-- bust out names that have more than one namePart (names) -->
-        <xsl:template match="mods:name" exclude-result-prefixes="#all">
-            <xsl:variable name="name-attributes" select="@*"/>
-            <xsl:choose>
-                <!--  more than one namePart? fix up -->
-                <xsl:when test="count(mods:namePart[normalize-space()]) > 1">
-                    <xsl:for-each select="mods:namePart">
-                        <name xmlns="http://www.loc.gov/mods/v3">
-                            <xsl:copy-of select="$name-attributes"/>
-                            <namePart><xsl:value-of select="."/></namePart>
-                            <xsl:apply-templates select="parent::mods:name/*[not(self::mods:namePart)]"/>
-                        </name>
-                    </xsl:for-each>
-                </xsl:when>
-                <xsl:otherwise>
-                    <xsl:copy>
-                        <xsl:apply-templates select="@* | *| text() | comment() | processing-instruction()"/>
-                    </xsl:copy>
-                </xsl:otherwise>
-            </xsl:choose>
-        </xsl:template>
+
         
         <!-- conflate latitude and longitude into a single /mods/subject/cartographics/coordinates
          Note that this relies on the mapping having both in the same /mods/subject, and in the correct order.
