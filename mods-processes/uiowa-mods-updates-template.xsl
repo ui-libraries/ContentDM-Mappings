@@ -102,7 +102,7 @@
         </xsl:template>  
         
         <!--to tokenize geographic subjects-->
-        <xsl:template match="mods:subject[mods:geographic]" exclude-result-prefixes="#all">
+        <xsl:template match="mods:subject[mods:geographic[contains(.,';') and not(contains(.,'--'))]]" exclude-result-prefixes="#all">
             <xsl:variable name="subject-attributes" select="@*"/>
             <xsl:for-each select="mods:geographic">
                 <xsl:for-each select="tokenize(.,';')">
@@ -151,40 +151,43 @@
             </subject>
         </xsl:template>
         
-        <!-- demo geo parsing -->
-        <xsl:template match="mods:subject/mods:geographic" exclude-result-prefixes="#all">
-            <xsl:variable name="geo-raw" select="normalize-space(.)"/>
-            <xsl:variable name="geo-cooked" select="replace($geo-raw,'\s*--\s*','--')"/>
-            <xsl:variable name="token-count" select="count(tokenize($geo-cooked,'--'))"/>
-            <xsl:choose>
-                <xsl:when test="$token-count = 4">
-                    <hierarchicalGeographic xmlns="http://www.loc.gov/mods/v3">
-                        <country><xsl:value-of select="tokenize($geo-cooked,'--')[1]"/></country>
-                        <state><xsl:value-of select="tokenize($geo-cooked,'--')[2]"/></state>
-                        <county><xsl:value-of select="tokenize($geo-cooked,'--')[3]"/></county>
-                        <city><xsl:value-of select="tokenize($geo-cooked,'--')[4]"/></city>
-                    </hierarchicalGeographic>
-                </xsl:when>
-                <xsl:when test="$token-count = 3">
-                    <hierarchicalGeographic xmlns="http://www.loc.gov/mods/v3">
-                        <country><xsl:value-of select="tokenize($geo-cooked,'--')[1]"/></country>
-                        <state><xsl:value-of select="tokenize($geo-cooked,'--')[2]"/></state>
-                        <city><xsl:value-of select="tokenize($geo-cooked,'--')[3]"/></city>
-                    </hierarchicalGeographic>
-                </xsl:when>
-                <xsl:when test="$token-count = 2">
-                    <hierarchicalGeographic xmlns="http://www.loc.gov/mods/v3">
-                        <country><xsl:value-of select="tokenize($geo-cooked,'--')[1]"/></country>
-                        <state><xsl:value-of select="tokenize($geo-cooked,'--')[2]"/></state>
-                    </hierarchicalGeographic>
-                </xsl:when>
-                <!-- always have default processing -->
-                <xsl:otherwise>
-                    <xsl:copy>
-                        <xsl:apply-templates select="@* | *| text() | comment() | processing-instruction()"/>
-                    </xsl:copy>
-                </xsl:otherwise>
-            </xsl:choose>
+        <!-- geo parsing -->
+        <xsl:template match="mods:subject[mods:geographic[contains(.,'--')]]" exclude-result-prefixes="#all">
+            <xsl:for-each select="tokenize(mods:geographic,';')">
+                <xsl:variable name="geo-raw" select="normalize-space(.)"/>
+                <xsl:variable name="geo-cooked" select="replace($geo-raw,'\s*--\s*','--')"/>
+                <xsl:variable name="token-count" select="count(tokenize($geo-cooked,'--'))"/>
+                <subject xmlns="http://www.loc.gov/mods/v3">
+                    <xsl:choose>
+                        <xsl:when test="$token-count = 4">
+                            <hierarchicalGeographic xmlns="http://www.loc.gov/mods/v3">
+                                <country><xsl:value-of select="tokenize($geo-cooked,'--')[1]"/></country>
+                                <state><xsl:value-of select="tokenize($geo-cooked,'--')[2]"/></state>
+                                <county><xsl:value-of select="tokenize($geo-cooked,'--')[3]"/></county>
+                                <city><xsl:value-of select="tokenize($geo-cooked,'--')[4]"/></city>
+                            </hierarchicalGeographic>
+                        </xsl:when>
+                        <xsl:when test="$token-count = 3">
+                            <hierarchicalGeographic xmlns="http://www.loc.gov/mods/v3">
+                                <country><xsl:value-of select="tokenize($geo-cooked,'--')[1]"/></country>
+                                <state><xsl:value-of select="tokenize($geo-cooked,'--')[2]"/></state>
+                                <city><xsl:value-of select="tokenize($geo-cooked,'--')[3]"/></city>
+                            </hierarchicalGeographic>
+                        </xsl:when>
+                        <xsl:when test="$token-count = 2">
+                            <hierarchicalGeographic xmlns="http://www.loc.gov/mods/v3">
+                                <country><xsl:value-of select="tokenize($geo-cooked,'--')[1]"/></country>
+                                <state><xsl:value-of select="tokenize($geo-cooked,'--')[2]"/></state>
+                            </hierarchicalGeographic>
+                        </xsl:when>
+                        <!-- always have default processing -->
+                        <xsl:otherwise>
+                            <xsl:copy-of select="."/>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                </subject>
+            </xsl:for-each>
+
         </xsl:template>
         
         <!-- child objects should have title of their parents -->
