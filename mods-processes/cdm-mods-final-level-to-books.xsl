@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:saxon="http://saxon.sf.net/"
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:mods="http://www.loc.gov/mods/v3"
     xmlns:cdm="http://www.oclc.org/contentdm"
-    exclude-result-prefixes="xs"  extension-element-prefixes="saxon"
+    exclude-result-prefixes="xs"
     version="2.0">
-    
+
     <!-- Template to change to books:
          - final level in hierarchy, i.e. the last collection without a subcollection
          - compounds with only large image children
@@ -13,10 +13,10 @@
     <xsl:output method="xml" encoding="UTF-8" indent="yes"/>
 
     <xsl:strip-space elements="*"/>
-    
+
     <xsl:param name="islandora-namespace" required="yes"/>
     <xsl:variable name="islandora-namespace-prefix" select="concat($islandora-namespace,':')"/>
- 
+
     
     <!-- build hierarchy for reference, top level collections then recurse; top level compounds -->
     <xsl:variable name="tree" exclude-result-prefixes="#all">
@@ -48,7 +48,7 @@
             </xsl:for-each>
         </tree>
     </xsl:variable>
-    
+
     <xsl:template name="recurse-nodes" exclude-result-prefixes="#all">
         <xsl:param name="node-id"/>
         <xsl:param name="cmodel"/>
@@ -65,7 +65,7 @@
             </xsl:for-each>
         </node>
     </xsl:template>
-    
+
    <!-- make collections with one level of image children a book -->
     <xsl:template match="mods:mods/mods:relatedItem[@otherType = 'islandoraCModel']/mods:identifier[. = 'islandora:collectionCModel']" exclude-result-prefixes="#all">
         <xsl:variable name="identifier" select="ancestor::mods:mods/mods:identifier[@type = 'islandora']"/>
@@ -78,7 +78,7 @@
             <xsl:otherwise><xsl:copy-of select="."/></xsl:otherwise>
         </xsl:choose>
     </xsl:template>
-    
+
     <!-- make compounds with one level of image children a book -->
     <xsl:template match="mods:mods/mods:relatedItem[@otherType = 'islandoraCModel']/mods:identifier[. = 'islandora:compoundCModel']" exclude-result-prefixes="#all">
         <xsl:variable name="identifier" select="ancestor::mods:mods/mods:identifier[@type = 'islandora']"/>
@@ -116,7 +116,7 @@
             <xsl:otherwise><xsl:copy-of select="."/></xsl:otherwise>
         </xsl:choose>
     </xsl:template>
-    
+
     <!-- Image objects that are a compound, and whose parent collection has only one level that contains nothing but images,
          become a page. This is done by changing the isChildOf relationship type to isPageOf type.
     -->
@@ -139,7 +139,21 @@
             <xsl:otherwise><xsl:copy-of select="."/></xsl:otherwise>
         </xsl:choose>
     </xsl:template>
-    
+
+    <!-- Image objects that are a compound child whose parent collection has only one level that contains nothing 
+        but images, must have their collection associations removed. -->
+    <xsl:template match="mods:mods[mods:relatedItem[@otherType = 'isChildOf']][matches(mods:relatedItem[@otherType = 'islandoraCModel']/mods:identifier,'image')]/mods:relatedItem[@otherType = 'islandoraCollection']" exclude-result-prefixes="#all">
+        <xsl:variable name="identifier" select="parent::mods:mods/mods:identifier[@type = 'islandora']"/>
+        <xsl:variable name="book-identifier" select="normalize-space(mods:identifier)"/>
+        <xsl:choose>
+            <!-- when: parent is a container, does not have any subcollections, and none of its children are not images, 
+                 it's a page, so remove collection association -->
+            <xsl:when test="$tree//node[@id = $identifier][not(parent::node/node[@cmodel = 'islandora:collectionCModel'])][not(parent::node/node[not(matches(@cmodel,'image'))])]"/>
+            <!-- or let it be -->
+            <xsl:otherwise><xsl:copy-of select="."/></xsl:otherwise>
+        </xsl:choose>
+    </xsl:template>
+
     <xsl:template name="book-identifier">
         <xsl:param name="book-identifier" as="xs:string" required="yes"/>
         <xsl:choose>
@@ -151,7 +165,7 @@
             </xsl:otherwise>
         </xsl:choose>
     </xsl:template>
-    
+
     <!-- have to change cModel for the image objects that will become pages 
          this works for both compounds and collections
     -->
@@ -171,7 +185,7 @@
         </xsl:choose>
     </xsl:template>
 
-    
+
     <!-- identity transform to copy through all nodes (except those with specific templates modifying them -->    
     <xsl:template match="/" exclude-result-prefixes="#all">
         <xsl:copy>
@@ -188,10 +202,10 @@
         </xsl:copy>
     </xsl:template>
 
-    <!-- keep comments and PIs						-->
+    <!-- keep comments and PIs -->
     <xsl:template match="comment() | processing-instruction()">
         <xsl:copy-of select="."/>
     </xsl:template>
-    
+
    
 </xsl:stylesheet>
