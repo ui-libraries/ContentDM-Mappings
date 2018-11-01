@@ -107,17 +107,16 @@
     </xsl:template>
 
 
-    <!-- Image objects that are not a compound child
-        whose parent collection has only one level that contains nothing but images, 
-         become a page. This is done by changing the collection relationship to an isPageOf relationship.
-         Page objects should not have collection associations.
+    <!-- This template addresses the collection relationship of image records that are not the child of a compound.
+         If the record has no non-image siblings and is to become a book page, the relationship type is 
+         changed from islandoraCollection to isPageOf, otherwise it is copied through. 
+         In this case removal of the collection association and creating the isPageOf relationship can be 
+         handled in one template. Two subsequent templates handle image records that are the child of a compound.
     -->
     <xsl:template match="mods:mods[not(mods:relatedItem[@otherType = 'isChildOf'])][matches(mods:relatedItem[@otherType = 'islandoraCModel']/mods:identifier,'image')]/mods:relatedItem[@otherType = 'islandoraCollection']" exclude-result-prefixes="#all">
         <xsl:variable name="identifier" select="parent::mods:mods/mods:identifier[@type = 'islandora']"/>
         <xsl:variable name="book-identifier" select="normalize-space(mods:identifier)"/>
         <xsl:choose>
-            <!-- when: parent is a container, does not have any subcollections, and none of its children are not images, 
-                 it's a page so replace child relationship with collection to isPageOf -->
             <xsl:when test="$tree//node[@id = $identifier][not(parent::node/node[@cmodel = 'islandora:collectionCModel'])][not(parent::node/node[not(matches(@cmodel,'image'))])]">
                 <relatedItem xmlns="http://www.loc.gov/mods/v3" otherType="isPageOf" otherTypeAuth="dgi">
                     <identifier>
@@ -127,20 +126,20 @@
                     </identifier>
                 </relatedItem>
             </xsl:when>
-            <!-- or let it be -->
             <xsl:otherwise><xsl:copy-of select="."/></xsl:otherwise>
         </xsl:choose>
     </xsl:template>
     
-    <!-- Image objects that are a compound child whose parent collection has only one level that contains nothing 
-        but images, become a page. This is done by changing the isChildOf relationship type to isPageOf type.
+    <!-- Handling image records that are compound children requires two templates. This template tests: If 
+         the record has no non-image siblings and is to become a book page, the relationship type is changed 
+         from isChildOf to isPageOf, otherwise it is copied through.
+         A subsequent template handles removal of the collection relationship if a record is changed to a
+         book page.
     -->
     <xsl:template match="mods:mods[mods:relatedItem[@otherType = 'isChildOf']][matches(mods:relatedItem[@otherType = 'islandoraCModel']/mods:identifier,'image')]/mods:relatedItem[@otherType = 'isChildOf']" exclude-result-prefixes="#all">
         <xsl:variable name="identifier" select="parent::mods:mods/mods:identifier[@type = 'islandora']"/>
         <xsl:variable name="book-identifier" select="normalize-space(mods:identifier)"/>
         <xsl:choose>
-            <!-- when: parent is a container, does not have any subcollections, and none of its children are not images, 
-                 it's a page, so change isChildOf to isPageOf -->
             <xsl:when test="$tree//node[@id = $identifier][not(parent::node/node[@cmodel = 'islandora:collectionCModel'])][not(parent::node/node[not(matches(@cmodel,'image'))])]">
                 <relatedItem xmlns="http://www.loc.gov/mods/v3" otherType="isPageOf" otherTypeAuth="dgi">
                     <identifier>
@@ -150,21 +149,18 @@
                     </identifier>
                 </relatedItem>
             </xsl:when>
-            <!-- or let it be -->
             <xsl:otherwise><xsl:copy-of select="."/></xsl:otherwise>
         </xsl:choose>
     </xsl:template>
     
-    <!-- Image objects that are a compound child whose parent collection has only one level that contains nothing 
-        but images, must have their collection associations removed. -->
+    <!-- See preceding template. This template, which also addresses compound children, tests: 
+        If the record has no non-image siblings and is to become a book page, the relationship
+        to a collection is removed, otherwise it is copied through.  -->
     <xsl:template match="mods:mods[mods:relatedItem[@otherType = 'isChildOf']][matches(mods:relatedItem[@otherType = 'islandoraCModel']/mods:identifier,'image')]/mods:relatedItem[@otherType = 'islandoraCollection']" exclude-result-prefixes="#all">
         <xsl:variable name="identifier" select="parent::mods:mods/mods:identifier[@type = 'islandora']"/>
         <xsl:variable name="book-identifier" select="normalize-space(mods:identifier)"/>
         <xsl:choose>
-            <!-- when: parent is a container, does not have any subcollections, and none of its children are not images, 
-                 it's a page, so remove collection association -->
             <xsl:when test="$tree//node[@id = $identifier][not(parent::node/node[@cmodel = 'islandora:collectionCModel'])][not(parent::node/node[not(matches(@cmodel,'image'))])]"/>
-            <!-- or let it be -->
             <xsl:otherwise><xsl:copy-of select="."/></xsl:otherwise>
         </xsl:choose>
     </xsl:template>
