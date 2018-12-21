@@ -187,16 +187,8 @@
                     </xsl:choose>
                 </subject>
             </xsl:for-each>
-
         </xsl:template>
         
-        <!-- child objects should have title of their parents -->
-        <xsl:template match="mods:mods[mods:relatedItem[@otherType = 'isChildOf']]/mods:titleInfo/mods:title" exclude-result-prefixes="#all">
-            <!-- get parent title -->
-            <xsl:variable name="parent-id" select="ancestor::mods:mods/mods:relatedItem[@otherType = 'isChildOf']/mods:identifier"/>
-            <xsl:variable name="parent-title" select="ancestor::mods:modsCollection/mods:mods[mods:identifier[@type = 'islandora'][. = $parent-id]]/mods:titleInfo[not(@type)][1]/mods:title"/>
-            <title xmlns="http://www.loc.gov/mods/v3"><xsl:value-of select="$parent-title"/></title>
-        </xsl:template>
         
         <!-- target collections in the uni namespace -->
         <xsl:template match="mods:relatedItem[@otherType='islandoraCollection']/mods:identifier" exclude-result-prefixes="#all">
