@@ -102,7 +102,7 @@
     </xsl:template>  
     
     <!--to tokenize geographic subjects-->
-    <xsl:template match="mods:subject[mods:geographic]" exclude-result-prefixes="#all">
+    <xsl:template match="mods:subject[mods:geographic[contains(.,';') and not(contains(.,'--'))]]" exclude-result-prefixes="#all">
         <xsl:variable name="subject-attributes" select="@*"/>
         <xsl:for-each select="mods:geographic">
             <xsl:for-each select="tokenize(.,';')">
