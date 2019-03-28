@@ -48,16 +48,18 @@
             </xsl:for-each>
         </xsl:for-each>
     </xsl:template>
-    
+
  <!--   temporarily commented out because it is stripping the type attribute
     <xsl:template match="mods:subject[not(mods:topic) and mods:name]" exclude-result-prefixes="#all">
         <xsl:variable name="subject-attributes" select="@*"/>
         <xsl:for-each select="mods:name/mods:namePart[normalize-space()]">
+            <xsl:variable name="name-attributes" select="../@*"/>
             <xsl:variable name="namepart-siblings" select="*[not(self::mods:namePart)]"/>
             <xsl:for-each select="tokenize(.,';')">
                 <subject xmlns="http://www.loc.gov/mods/v3">
                     <xsl:copy-of select="$subject-attributes"/>
                     <name>
+                        <xsl:copy-of select="$name-attributes"/>
                         <namePart><xsl:value-of select="normalize-space(.)"/></namePart>
                         <!-\- each name should include the namepart siblings -\->
                         <xsl:apply-templates select="$namepart-siblings"/>
