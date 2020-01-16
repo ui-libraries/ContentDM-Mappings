@@ -50,7 +50,7 @@
                 <xsl:if test="contains(lower-case(mods:titleInfo/mods:title), 'scrapbook')">
                     <node id="{$node-id}" cmodel="{$cmodel}">
                         <xsl:for-each
-                            select="/mods:modsCollection/mods:mods[mods:relatedItem[@otherType = 'isChildOf']/mods:identifier[. = $node-id]]">
+                            select="/mods:modsCollection/mods:mods[mods:relatedItem[@otherType = 'isChildOf']/mods:identifier[not(@type)][. = $node-id]]">
                             <xsl:variable name="node-id"
                                 select="mods:identifier[@type = 'islandora']"/>
                             <xsl:variable name="cmodel"

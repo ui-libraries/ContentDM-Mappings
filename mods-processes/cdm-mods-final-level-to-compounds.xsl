@@ -18,7 +18,7 @@
     <xsl:variable name="tree" exclude-result-prefixes="#all">
         <tree>
             <xsl:for-each
-                select="/mods:modsCollection/mods:mods[mods:relatedItem[@otherType = 'islandoraCModel']/mods:identifier[. = 'islandora:collectionCModel']][mods:relatedItem[@otherType = 'islandoraCollection'][not(contains(mods:identifier, '_'))]]">
+                select="/mods:modsCollection/mods:mods[mods:relatedItem[@otherType = 'islandoraCModel']/mods:identifier[. = 'islandora:collectionCModel']][mods:relatedItem[@otherType = 'islandoraCollection'][not(contains(., '_'))]]">
                 <xsl:variable name="node-id" select="concat($islandora-namespace-prefix,mods:identifier[@type = 'islandora'])"/>
                 <xsl:variable name="cmodel"
                     select="mods:relatedItem[@otherType = 'islandoraCModel']/mods:identifier"/>
