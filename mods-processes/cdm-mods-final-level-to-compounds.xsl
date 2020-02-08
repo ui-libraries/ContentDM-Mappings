@@ -70,6 +70,7 @@
             <xsl:when test="$tree//node[@id = $identifier][not(parent::node/node[@cmodel = 'islandora:collectionCModel'])][not(parent::node/node[not(matches(@cmodel,'image'))])]">
                 <xsl:variable name="identifier" select="ancestor::mods:mods/mods:identifier[@type = 'islandora']"/>
                 <relatedItem xmlns="http://www.loc.gov/mods/v3" otherType="isChildOf" otherTypeAuth="dgi">
+                    <identifier type='sequenceNo'><xsl:value-of select="count($tree//node[@id = $identifier][not(parent::node/node[@cmodel = 'islandora:collectionCModel'])][not(parent::node/node[not(matches(@cmodel,'image'))])]/preceding-sibling::node) + 1"/></identifier>
                     <identifier><xsl:value-of select="substring-after($book-identifier,':')"/></identifier>
                 </relatedItem>
             </xsl:when>
