@@ -142,6 +142,7 @@
         <xsl:choose>
             <xsl:when test="$tree//node[@id = $identifier][not(parent::node/node[@cmodel = 'islandora:collectionCModel'])][not(parent::node/node[not(matches(@cmodel,'image'))])]">
                 <relatedItem xmlns="http://www.loc.gov/mods/v3" otherType="isPageOf" otherTypeAuth="dgi">
+                    <xsl:copy-of select="mods:identifier[@type = 'sequenceNo']"/>
                     <identifier>
                         <xsl:call-template name="book-identifier">
                             <xsl:with-param name="book-identifier" select="$book-identifier"/>
